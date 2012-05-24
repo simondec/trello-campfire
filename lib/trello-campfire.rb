@@ -3,6 +3,7 @@
 
 require 'tinder'
 require 'rest_client'
+require 'trollop'
 
 class TrelloCampfire
   #Parse a node from trello
@@ -60,19 +61,23 @@ class TrelloCampfire
   end# }}}
 end
 
-#Edit the following sections with your own values from Campfire/Trello
+opts = Trollop::options do
+  opt :campfire_subdomain, "Campfire Subdomain", :required => true, :type => String
+  opt :campfire_token, "Campfire API Token", :required => true, :type => String
+  opt :campfire_room_name, "Campfire Room Name", :required => true, :type => String
+  opt :trello_board_id, "Trello Board Id", :required => true, :type => String
+  opt :trello_api_key, "Trello API Key", :required => true, :type => String
+  opt :trello_api_token, "Trello API Token", :required => true, :type => String
+end
 
 #Campfire configuration
-campfire = Tinder::Campfire.new 'CAMPFIRE_SITE_NAME', :token => "CAMPFIRE_TOKEN"
-campfire_room = campfire.find_room_by_name("CAMPFIRE_ROOM_NAME")
+campfire = Tinder::Campfire.new opts[:campfire_subdomain], :token => opts[:campfire_token]
+campfire_room = campfire.find_room_by_name(opts[:campfire_room_name])
 
 #Trello configuration
 #Read the documentation on how to get those values: https://trello.com/docs/gettingstarted/index.html
-board_id = "TRELLO_BOARD_ID"
-key = "TRELLO_API_KEY"
-token = "TRELLO_TOKEN"
-actions_url = "https://api.trello.com/1/boards/#{board_id}/actions?limit=10&key=#{key}&token=#{token}"
-cards_url = "https://api.trello.com/1/boards/#{board_id}/cards?key=#{key}&token=#{token}"
+actions_url = "https://api.trello.com/1/boards/#{opts[:trello_board_id]}/actions?limit=10&key=#{opts[:trello_api_key]}&token=#{opts[:trello_api_token]}"
+cards_url = "https://api.trello.com/1/boards/#{opts[:trello_board_id]}/cards?key=#{opts[:trello_api_key]}&token=#{opts[:trello_api_token]}"
 
 
 @last_index = nil
