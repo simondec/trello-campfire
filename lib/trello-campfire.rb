@@ -68,6 +68,7 @@ opts = Trollop::options do
   opt :trello_board_id, "Trello Board Id", :required => true, :type => String
   opt :trello_api_key, "Trello API Key", :required => true, :type => String
   opt :trello_api_token, "Trello API Token", :required => true, :type => String
+  opt :update_interval, "Update Interval (in seconds)", :default => 30
 end
 
 #Campfire configuration
@@ -111,5 +112,5 @@ while true do
     @last_date = Time.now.utc
   end
 
-  sleep(60)
+  sleep(opts[:update_interval])
 end
