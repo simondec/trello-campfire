@@ -53,8 +53,16 @@ class TrelloCampfire
       end
 
     # Update the name of a card
-    elsif node["type"] == "updateCard" && data["old"]
+    elsif node["type"] == "updateCard" && data["old"] && data["old"]["name"]
       return "#{creator_fullname} renamed [#{data["old"]["name"]}] to #{card_name} #{card_url}"
+
+    # archived card
+    elsif node["type"] == "updateCard" && data["old"]
+      if data["old"]["closed"] == true
+        return "#{creator_fullname} un-archived #{card_name} #{card_url}"
+      else
+        return "#{creator_fullname} archived #{card_name}"
+      end
 
     # Complete an item in the checklist of a card
     elsif node["type"] == "updateCheckItemStateOnCard" && data["checkItem"]["state"] == "complete"
