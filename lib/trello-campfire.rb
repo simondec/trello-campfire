@@ -1,6 +1,7 @@
 #TrelloCampfire
 #Parse activity feed events in a campfire room
 
+require 'time'
 require 'tinder'
 require 'rest_client'
 require 'trollop'
@@ -9,10 +10,12 @@ class TrelloCampfire
   #Parse a node from trello
   def self.parse(node, cards)# {{{
     data = node["data"]
-    card_id = "[#{data["card"]["id"]}]" if data
-    card_name = "[#{data["card"]["name"]}]" if data
-    card_object = cards.detect { |card| card["id"] == "#{data["card"]["id"]}" } if data
-    card_url = "(#{card_object["url"]})" if data
+    if data && data['card']
+      card_id = "[#{data["card"]["id"]}]"
+      card_name = "[#{data["card"]["name"]}]"
+      card_object = cards.detect { |card| card["id"] == "#{data["card"]["id"]}" }
+    end
+    card_url = "(#{card_object["url"]})" if data && data['card_object']
     creator_fullname = node["memberCreator"]["fullName"] if node["memberCreator"]
     creator_initials = node["memberCreator"]["initials"] if node["memberCreator"]
     member_fullname = node["member"]["fullName"] if node["member"]
