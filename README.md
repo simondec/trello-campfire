@@ -3,6 +3,8 @@
 Parse Trello activity feed into Campfire.
 
 ## Setup
+Get your [Trello API key](https://trello.com/1/appKey/generate) and [Trello API token](https://trello.com/docs/gettingstarted/index.html#getting-a-token-from-a-user), then clone the repo or:
+
 ```
 $ gem install trello-campfire
 ```
