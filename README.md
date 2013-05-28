@@ -25,8 +25,12 @@ $ trello-campfire stop
 ## Heroku
 1. Clone the repo
 2. Create a new Heroku app: `heroku create`
-3. Set your config vars: `heroku config:set TRELLO_API_KEY=fill_me_in TRELLO_API_TOKEN=fill_me_in TRELLO_BOARD_ID=fill_me_in CAMPFIRE_SUBDOMAIN=fill_me_in CAMPFIRE_ROOM=fill_me_in CAMPFIRE_TOKEN=fill_me_in UPDATE_INTERVAL=30`
-4. Push! `git push heroku master`
+3. Push: `git push heroku master`
+4. Set your config vars:
+
+```
+heroku config:set TRELLO_API_KEY=fill_me_in TRELLO_API_TOKEN=fill_me_in TRELLO_BOARD_ID=fill_me_in CAMPFIRE_SUBDOMAIN=fill_me_in CAMPFIRE_ROOM=fill_me_in CAMPFIRE_TOKEN=fill_me_in UPDATE_INTERVAL=30
+```
 
 Also, you may need to start your worker: `heroku ps:scale worker=1`
 
