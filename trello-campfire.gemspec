@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.require_paths = ['lib']
 
   s.add_dependency 'rest-client', '~> 1.6.7'
-  s.add_dependency 'tinder', '~> 1.8.0'
+  s.add_dependency 'tinder', '~> 1.9.2'
   s.add_dependency 'daemons', '~> 1.1.8'
-  s.add_dependency 'trollop', '~> 1.16.2'
+  s.add_dependency 'trollop', '~> 2.0.0'
 end
