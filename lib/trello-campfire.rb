@@ -62,7 +62,7 @@ class TrelloCampfire
     elsif node["type"] == "updateCard" && data["old"]
       if data["old"]["closed"] == true
         return "[#{prefix}] #{creator_fullname} un-archived #{card_name} #{card_url}"
-      else
+      elsif data["old"]["closed"] == false
         return "[#{prefix}] #{creator_fullname} archived #{card_name}"
       end
 
