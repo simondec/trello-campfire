@@ -1,6 +1,7 @@
 #TrelloCampfire
 #Parse activity feed events in a campfire room
 
+require 'time'
 require 'tinder'
 require 'rest_client'
 require 'trollop'
@@ -9,10 +10,12 @@ class TrelloCampfire
   #Parse a node from trello
   def self.parse(node, cards)# {{{
     data = node["data"]
-    card_id = "[#{data["card"]["id"]}]" if data
-    card_name = "[#{data["card"]["name"]}]" if data
-    card_object = cards.detect { |card| card["id"] == "#{data["card"]["id"]}" } if data
-    card_url = "(#{card_object["url"]})" if data
+    if data && data['card']
+      card_id = "[#{data["card"]["id"]}]"
+      card_name = "[#{data["card"]["name"]}]"
+      card_object = cards.detect { |card| card["id"] == "#{data["card"]["id"]}" }
+    end
+    card_url = "(#{card_object["url"]})" if data && data['card_object']
     creator_fullname = node["memberCreator"]["fullName"] if node["memberCreator"]
     creator_initials = node["memberCreator"]["initials"] if node["memberCreator"]
     member_fullname = node["member"]["fullName"] if node["member"]
@@ -21,41 +24,51 @@ class TrelloCampfire
     # Events handled and parsed in campfire.
     # Change/Comment/Add events to fit your needs.
 
+    prefix = "trello"
+
     # Move card
     if node["type"] == "updateCard" && data["listAfter"] && data["listBefore"]
-      return "#{creator_fullname} moved #{card_name} from #{data["listBefore"]["name"]} to #{data["listAfter"]["name"]} #{card_url}"
+      return "[#{prefix}] #{creator_fullname} moved #{card_name} from #{data["listBefore"]["name"]} to #{data["listAfter"]["name"]} #{card_url}"
 
     # Comment card
     elsif node["type"] == "commentCard"
-      return "#{creator_fullname} commented on #{card_name}: \"#{data["text"]}\" #{card_url}"
+      return "[#{prefix}] #{creator_fullname} commented on #{card_name}: \"#{data["text"]}\" #{card_url}"
 
     # Create card
     elsif node["type"] == "createCard"
-      return "#{creator_fullname} created #{card_name} in #{data["list"]["name"]} #{card_url}"
+      return "[#{prefix}] #{creator_fullname} created #{card_name} in #{data["list"]["name"]} #{card_url}"
 
     # Add a member to a card
     elsif node["type"] == "addMemberToCard"
       if node["memberCreator"]["id"] == node["member"]["id"]
-        return "#{creator_fullname} joined #{card_name} #{card_url}"
+        return "[#{prefix}] #{creator_fullname} joined #{card_name} #{card_url}"
       else
-        return "#{creator_fullname} added #{member_fullname} to #{card_name} #{card_url}"
+        return "[#{prefix}] #{creator_fullname} added #{member_fullname} to #{card_name} #{card_url}"
       end
 
     # Remove a member to a card
     elsif node["type"] == "removeMemberFromCard"
       if node["memberCreator"]["id"] == node["member"]["id"]
-        return "#{creator_fullname} left #{card_name} #{card_url}"
+        return "[#{prefix}] #{creator_fullname} left #{card_name} #{card_url}"
       else
-        return "#{creator_fullname} removed #{member_fullname} from #{card_name} #{card_url}"
+        return "[#{prefix}] #{creator_fullname} removed #{member_fullname} from #{card_name} #{card_url}"
       end
 
     # Update the name of a card
+    elsif node["type"] == "updateCard" && data["old"] && data["old"]["name"]
+      return "[#{prefix}] #{creator_fullname} renamed [#{data["old"]["name"]}] to #{card_name} #{card_url}"
+
+    # archived card
     elsif node["type"] == "updateCard" && data["old"]
-      return "#{creator_fullname} renamed [#{data["old"]["name"]}] to #{card_name} #{card_url}"
+      if data["old"]["closed"] == true
+        return "[#{prefix}] #{creator_fullname} un-archived #{card_name} #{card_url}"
+      elsif data["old"]["closed"] == false
+        return "[#{prefix}] #{creator_fullname} archived #{card_name}"
+      end
 
     # Complete an item in the checklist of a card
     elsif node["type"] == "updateCheckItemStateOnCard" && data["checkItem"]["state"] == "complete"
-      return "#{creator_fullname} completed #{data["checkItem"]["name"]} on #{card_name} #{card_url}"
+      return "[#{prefix}] #{creator_fullname} completed #{data["checkItem"]["name"]} on #{card_name} #{card_url}"
 
     end
   end# }}}

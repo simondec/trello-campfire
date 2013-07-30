@@ -1,0 +1,1 @@
+worker: ruby lib/trello-campfire.rb --campfire-subdomain $CAMPFIRE_SUBDOMAIN --campfire-token $CAMPFIRE_TOKEN --campfire-room-name $CAMPFIRE_ROOM --trello-board-id $TRELLO_BOARD_ID --trello-api-key $TRELLO_API_KEY --trello-api-token $TRELLO_API_TOKEN --update-interval $UPDATE_INTERVAL
