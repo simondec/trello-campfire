@@ -1,6 +1,3 @@
-#TrelloCampfire
-#Parse activity feed events in a campfire room
-
 require 'time'
 require 'tinder'
 require 'rest_client'
