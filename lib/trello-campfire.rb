@@ -1,6 +1,3 @@
-#TrelloCampfire
-#Parse activity feed events in a campfire room
-
 require 'time'
 require 'tinder'
 require 'rest_client'
@@ -15,7 +12,8 @@ class TrelloCampfire
       card_name = "[#{data["card"]["name"]}]"
       card_object = cards.detect { |card| card["id"] == "#{data["card"]["id"]}" }
     end
-    card_url = "(#{card_object["url"]})" if data && data['card_object']
+
+    card_url = "(#{card_object["url"]})" if data && data['card']
     creator_fullname = node["memberCreator"]["fullName"] if node["memberCreator"]
     creator_initials = node["memberCreator"]["initials"] if node["memberCreator"]
     member_fullname = node["member"]["fullName"] if node["member"]
